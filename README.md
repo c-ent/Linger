@@ -1,51 +1,60 @@
-# Lyrics Floater
+# Linger
 
-A small Python project that displays timed lyric animations using `tkinter`.
-
-Each script contains a `LYRICS` list with timed events and display styles.
-
-## Requirements
-
-- Python 3
-- `tkinter` (usually included with standard Python installs)
+Timed lyric windows. One shared player runs every song. A song file is the timing, the words, and the look.
 
 ## Run
 
-From the project folder, run a song script like this:
+From this folder:
 
 ```bash
-python song_name.py
-```
-
-Example:
-
-```bash
+python kiss_me.py
 python stupid_song.py
+python nowhere_nobody.py
 ```
 
-## Lyrics format
+Requires Python 3.10 or newer. `tkinter` ships with standard Python installs.
 
-The scripts support multiple lyric event types, including:
+Audio is optional. Set `audio="path/to/song.mp3"` on a `Song` and install pygame (`pip install pygame`). The windows still run without it.
 
-- `Normal line`
-- `Word-timed`
-- `Side-by-side`
-- `Shout collage`
-- `Linger`
-- `Slam`
-- `Tinker swarm`
+## Layout
 
-Each file includes instructions at the top describing the exact `LYRICS` format.
+- `kiss_me.py`, `stupid_song.py`, and `nowhere_nobody.py` are the songs. Add another file like these.
+- `player/` is the shared player. Do not copy it into a song.
 
-## Customize
+## Add a song
 
-To change the song display, edit the `LYRICS` list inside each script.
+Create `your_song.py` in this folder:
 
-- `timestamp`: time in seconds from the song start
-- `hold`: how long the line stays after typing finishes (`None` means forever)
-- `type_speed`: delay between characters, in seconds
-- `w`: text window width
+```python
+from player import play
+from player.song import Song, line, linger, slam
+from player.style import Style
 
-## Notes
+SONG = Song(
+    id="your_song",
+    title="Your Song",
+    style=Style(font_size=32),
+    cues=(
+        line(0.00, "First line", width=380, type_speed=0.04),
+        linger(8.00, "This one stays put"),
+        slam(12.00, "Last line", hold=3.5),
+    ),
+)
 
-The project uses `tkinter` windows and animation effects to create dynamic lyric visuals. If a script fails due to missing `tkinter`, install Python with the Tk support or use a distribution that includes it.
+if __name__ == "__main__":
+    play(SONG)
+```
+
+Run it with `python your_song.py`.
+
+Cue helpers in `player/song.py`:
+
+- `line` types a sentence. `hold=None` keeps it until the next cue.
+- `words` reveals fragments on absolute song times: `(5.14, "We"), (5.71, " could")`.
+- `linger` is a centered line that stays. It accepts a string or word-timed fragments.
+- `slam` is the oversized payoff. Closing it also clears a tinker swarm.
+- `shout` floods the screen with copies of one line.
+- `tinker` bounces small chips until the next slam.
+- `side` opens panels one after another. When another cue follows, the hold is fitted so the row ends as that cue starts.
+
+`at` is seconds from the start and must not go backwards. `Style` is where a song changes font size, shout density, tinker speed, and whether ordinary lines sit in the center.

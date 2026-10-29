@@ -3,18 +3,16 @@
 from player.song import Song, line, linger, slam, tinker
 from player.style import Style
 
-STYLE = Style(
-    font_size=18,
-    shout_font_size=18,
-    tinker_font_size=16,
-    linger_font_size=28,
-    slam_font_size=28,
-)
-
 SONG = Song(
     id="nowhere_nobody",
     title="nowhere nobody",
-    style=STYLE,
+    style=Style(
+        font_size=18,
+        shout_font_size=18,
+        tinker_font_size=16,
+        linger_font_size=28,
+        slam_font_size=28,
+    ),
     cues=(
         linger(0.00, "Deep breaths, honey"),
         line(2.81, "There's no more running", width=380, type_speed=0.060),
